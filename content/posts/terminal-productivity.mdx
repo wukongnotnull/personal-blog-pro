@@ -1,0 +1,76 @@
+---
+title: "Building a Minimal Terminal Workflow"
+date: "2024-03-05"
+description: "How I transformed my terminal setup into a focused, distraction-free environment that boosts productivity."
+tags: ["tools", "productivity", "terminal"]
+---
+
+After years of accumulating aliases, plugins, and configurations, I realized my &quot;optimized&quot; terminal was actually slowing me down. Here&apos;s how I stripped back to essentials and built a workflow that genuinely works.
+
+## The Problem with Over-Configuration
+
+My old setup had:
+- 30+ plugins loading on every shell startup
+- Custom prompt showing git status, Node version, Docker status, you name it
+- Dozens of aliases that I barely remembered
+- A startup time of nearly 2 seconds
+
+Sound familiar? I was spending more time maintaining my tools than doing actual work.
+
+## Starting Fresh
+
+I wiped my configuration and started adding things back one at a time. The rule: if I didn&apos;t use a feature daily, it didn&apos;t make the cut.
+
+## My Essential Setup
+
+### Shell: zsh with minimal plugins
+
+I use only three plugins:
+- `zsh-autosuggestions` — fish-like autosuggestions from history
+- `zsh-syntax-highlighting` — command syntax highlighting
+- `fzf` integration — for history search and completion
+
+### Prompt: Starship
+
+A fast, cross-shell prompt that shows only what I need:
+
+```toml
+[git]
+format = "on $branch$status"
+style = "bold green"
+
+[nodejs]
+format = "via [$version](bold green) "
+disabled = true  # Only show when in a Node project
+```
+
+### Terminal Multiplexer: tmux
+
+Window management that survives disconnects:
+
+```bash
+# Sessions
+tmux new -s work      # Create named session
+tmux attach -t work   # Attach to session
+
+# Windows (tabs)
+Ctrl+b c              # New window
+Ctrl+b 1-9            # Switch to window
+
+# Panes (splits)
+Ctrl+b %              # Split vertically
+Ctrl+b "              # Split horizontally
+```
+
+## Daily Workflow
+
+1. **Single terminal window** with tmux handling all my contexts
+2. **Two primary windows**: editor and terminal
+3. **fzf** for searching everything: files, history, processes
+4. **vim keybindings** everywhere for muscle memory consistency
+
+## The Key Insight
+
+Productivity isn&apos;t about having the most features. It&apos;s about having exactly the features you need, configured simply, and learned deeply.
+
+I spend zero time thinking about my tools now. That&apos;s the goal.

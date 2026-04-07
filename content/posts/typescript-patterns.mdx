@@ -1,0 +1,147 @@
+---
+title: "TypeScript Patterns I Reach For Daily"
+date: "2024-03-25"
+description: "The TypeScript techniques and patterns that have become essential parts of my coding practice."
+tags: ["typescript", "javascript", "programming"]
+---
+
+After years of TypeScript in production, certain patterns emerge as consistently useful. These are the ones I find myself reaching for daily, the techniques that make codebases maintainable and refactorable.
+
+## Discriminated Unions for State
+
+Instead of boolean flags or nullable types for state, use discriminated unions:
+
+```typescript
+type AsyncState<T> =
+  | { status: "idle" }
+  | { status: "loading" }
+  | { status: "success"; data: T }
+  | { status: "error"; error: Error };
+
+function render(state: AsyncState<User>) {
+  switch (state.status) {
+    case "idle": return <Empty />;
+    case "loading": return <Spinner />;
+    case "success": return <UserProfile user={state.data} />;
+    case "error": return <ErrorMessage error={state.error} />;
+  }
+}
+```
+
+TypeScript narrows the type in each branch. No more `state.data?.name` or runtime checks.
+
+## The Builder Pattern with Type Safety
+
+For complex configuration objects, a fluent builder prevents mistakes:
+
+```typescript
+class QueryBuilder<T> {
+  private query: Partial<T> = {};
+  private selects: (keyof T)[] = [];
+  private filters: string[] = [];
+
+  select<K extends keyof T>(key: K): QueryBuilder<T> {
+    this.selects.push(key);
+    return this;
+  }
+
+  where<K extends keyof T>(key: K, value: T[K]): QueryBuilder<T> {
+    this.filters.push(`${String(key)} = ${value}`);
+    return this;
+  }
+
+  build(): { select: (keyof T)[]; where: string[] } {
+    return {
+      select: this.selects,
+      where: this.filters,
+    };
+  }
+}
+
+const query = new QueryBuilder<User>()
+  .select("id")
+  .select("email")
+  .where("active", true)
+  .build();
+```
+
+## Branded Types for Domain Modeling
+
+Prevent mixing up values that share the same primitive type:
+
+```typescript
+type UserId = string & { readonly brand: unique symbol };
+type PostId = string & { readonly brand: unique symbol };
+
+function createUserId(id: string): UserId {
+  return id as UserId;
+}
+
+function createPostId(id: string): PostId {
+  return id as PostId;
+}
+
+function getUser(id: UserId): Promise<User> { /* ... */ }
+
+const postId = createPostId("123");
+getUser(postId); // Type error! PostId is not UserId
+```
+
+## Satisfies for Const Assertions
+
+The `satisfies` operator validates types without widening:
+
+```typescript
+const config = {
+  apiUrl: "https://api.example.com",
+  timeout: 5000,
+  retry: true,
+} satisfies Config;
+
+// config.apiUrl is "https://api.example.com", not string
+// But TypeScript still validates it matches Config type
+```
+
+This is perfect for configuration objects where you want autocomplete but also type checking.
+
+## Extract and Exclude for Utility Types
+
+Transform union types with precision:
+
+```typescript
+type Event =
+  | { kind: "click"; x: number; y: number }
+  | { kind: "keydown"; key: string }
+  | { kind: "focus"; target: HTMLElement };
+
+// Get only event names
+type EventName = Event["kind"];
+// "click" | "keydown" | "focus"
+
+// Get event types for specific events
+type PointerEvent = Extract<Event, { kind: "click" | "focus" }>;
+
+// Remove certain events
+type NonFocusEvent = Exclude<Event, { kind: "focus" }>;
+```
+
+## Template Literal Types for APIs
+
+Create type-safe string patterns:
+
+```typescript
+type CSSProperty = `--${string}`;
+
+function setCSSVariable(element: HTMLElement, property: CSSProperty, value: string) {
+  element.style.setProperty(property, value);
+}
+
+setCSSVariable(el, "--primary-color", "blue"); // OK
+setCSSVariable(el, "primary-color", "blue"); // Error
+```
+
+## Putting It Together
+
+These patterns share a common goal: moving error detection from runtime to compile time. The more you encode your domain logic in types, the more confidence you have when refactoring.
+
+Start with discriminated unions for state — you&apos;ll wonder how you managed without them. Then gradually introduce the others as you encounter situations where they shine.

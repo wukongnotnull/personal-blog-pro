@@ -1,0 +1,116 @@
+---
+title: "Modern CSS Techniques You Should Know in 2024"
+date: "2024-02-10"
+description: "Explore the latest CSS features including container queries, cascade layers, and the :has() selector that are transforming how we write stylesheets."
+tags: ["css", "web-development", "frontend"]
+---
+
+The CSS landscape has evolved dramatically in recent years. Features that once required JavaScript or complex workarounds are now native to the browser. In this post, we&apos;ll explore the modern techniques that should be in every frontend developer&apos;s toolkit.
+
+## Container Queries
+
+For years, we relied on viewport-based media queries to create responsive designs. But what if you needed an element to adapt based on its container&apos;s size? Container queries solve exactly this problem.
+
+```css
+.card-container {
+  container-type: inline-size;
+  container-name: card;
+}
+
+@container card (min-width: 400px) {
+  .card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+  }
+}
+```
+
+Now your card layout adapts based on available space, not the viewport.
+
+## The :has() Selector
+
+The `:has()` selector is a game-changer. It allows you to style a parent element based on its children — something that was previously impossible without JavaScript.
+
+```css
+/* Style a form when it contains an invalid input */
+form:has(:invalid) {
+  border-color: red;
+}
+
+/* Style a card differently when it has an image */
+.card:has(img) {
+  grid-template-columns: 1fr 1.5fr;
+}
+```
+
+## Cascade Layers
+
+Cascade layers give you explicit control over the order in which styles conflict. No more fighting with specificity or worrying about third-party styles overriding your code.
+
+```css
+@layer reset, base, components, utilities;
+
+@layer reset {
+  * { margin: 0; padding: 0; }
+}
+
+@layer base {
+  body { font-family: system-ui; }
+}
+
+@layer components {
+  .btn { padding: 0.75rem 1.5rem; }
+}
+
+@layer utilities {
+  .text-sm { font-size: 0.875rem; }
+}
+```
+
+## Color Functions
+
+CSS now supports dynamic color manipulation directly in the browser.
+
+```css
+:root {
+  --primary: oklch(60% 0.2 250);
+
+  --primary-light: oklch(70% 0.2 250);
+  --primary-dark: oklch(50% 0.2 250);
+}
+
+/* Using relative colors */
+.button {
+  background: color-mix(in oklch, var(--primary) 80%, white);
+}
+```
+
+## The @property Rule
+
+CSS custom properties are powerful, but they&apos;ve traditionally been limited to string values. `@property` changes this by allowing you to define typed custom properties with initial values and inheritance behavior.
+
+```css
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.rotating-gradient {
+  background: conic-gradient(
+    from var(--gradient-angle),
+    red, yellow, lime, aqua, blue, magenta, red
+  );
+  animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+  to { --gradient-angle: 360deg; }
+}
+```
+
+## Wrapping Up
+
+These features represent a significant leap forward in CSS capabilities. Browser support is excellent for all of them, making now the perfect time to start incorporating them into your projects.
+
+The key is to use them thoughtfully — they solve real problems, not imagined ones. Start with container queries for component-level responsiveness, then explore cascade layers for better style organization.

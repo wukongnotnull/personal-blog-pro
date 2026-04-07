@@ -1,0 +1,66 @@
+{
+  "Navigation": {
+    "home": "首页",
+    "blog": "博客",
+    "about": "关于",
+    "search": "搜索"
+  },
+  "Home": {
+    "title": "关于技术、编程与生活的思考。",
+    "subtitle": "一个极简博客，探讨网页开发、软件工程，以及生活中的偶尔感悟。由一位坚信简洁代码和清晰思维的开发者撰写。",
+    "recentPosts": "最新文章",
+    "viewAll": "查看全部 →",
+    "noPosts": "暂无文章，敬请期待！"
+  },
+  "Blog": {
+    "title": "所有文章",
+    "noPosts": "暂无文章。"
+  },
+  "Post": {
+    "minRead": "分钟阅读",
+    "tableOfContents": "目录"
+  },
+  "Tag": {
+    "posts": "{count} 篇文章"
+  },
+  "Search": {
+    "title": "搜索",
+    "placeholder": "搜索文章...",
+    "found": "找到 {count} 篇文章",
+    "noResults": "未找到与「{query}」相关的文章",
+    "tryAgain": "试试其他关键词",
+    "startTyping": "开始输入以搜索文章"
+  },
+  "About": {
+    "title": "关于",
+    "hello": "你好！我是一名软件开发者，位于旧金山，热爱构建出色的网页体验和编写简洁、可维护的代码。",
+    "background": "背景",
+    "backgroundText": "拥有超过十年的软件开发经验，我专注于全栈网页开发，尤其擅长 React、TypeScript 和 Node.js。我曾在多家初创公司和知名企业工作，开发的产品服务了数百万用户。",
+    "whatIWriteAbout": "我会写些什么",
+    "topics": {
+      "webDev": "网页开发最佳实践与模式",
+      "tooling": "工具和工作流改进",
+      "architecture": "架构与系统设计",
+      "career": "职业成长与软技能"
+    },
+    "getInTouch": "联系我",
+    "getInTouchText": "欢迎通过 {twitter} 或 {github} 联系我。很高兴与各位开发者交流！"
+  },
+  "Footer": {
+    "copyright": "© {year} Personal Blog. 版权所有。",
+    "rss": "RSS"
+  },
+  "Theme": {
+    "switchToLight": "切换到浅色主题",
+    "switchToDark": "切换到深色主题"
+  },
+  "Auth": {
+    "login": "登录",
+    "email": "邮箱",
+    "password": "密码",
+    "invalidCredentials": "邮箱或密码错误",
+    "signOut": "退出登录",
+    "loading": "加载中...",
+    "backToHome": "← 返回首页"
+  }
+}

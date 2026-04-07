@@ -1,0 +1,117 @@
+---
+title: "A Practical Guide to Git Rebase"
+date: "2024-03-15"
+description: "Learn when to merge vs rebase, how to resolve conflicts, and the workflow I use to keep a clean project history."
+tags: ["git", "development-workflow"]
+---
+
+Git rebasing is one of those concepts that intimidates many developers, but understanding it unlocks a cleaner, more readable project history. Let me share the mental model that finally made it click for me.
+
+## The Key Distinction
+
+**Merge** combines changes from different branches, preserving the exact history of how work happened.
+
+**Rebase** rewrites your commits as if they were made on top of the current state of the target branch.
+
+```
+# Before rebase:
+main:    A---B---C
+              \
+feature:       D---E
+
+# After rebase onto main:
+main:    A---B---C
+                 \
+feature:          D'---E'
+```
+
+## When to Use Each
+
+**Use merge when:**
+- Combining branches that others have already seen
+- Working on a long-lived feature branch
+- You need a clear record of when branches were integrated
+
+**Use rebase when:**
+- Keeping a linear, clean history
+- Updating your feature branch before merging
+- Cleaning up local commits before sharing
+
+## The Workflow I Use
+
+### 1. Start fresh with a clean main
+
+```bash
+git checkout main
+git pull origin main
+```
+
+### 2. Create a feature branch
+
+```bash
+git checkout -b feature/my-change
+```
+
+### 3. Make commits as usual
+
+```bash
+git add .
+git commit -m "Add user authentication"
+git commit -m "Add protected routes"
+```
+
+### 4. Before merging, rebase onto main
+
+```bash
+git fetch origin
+git rebase origin/main
+```
+
+### 5. Handle conflicts one commit at a time
+
+```bash
+# Fix the conflict
+git add conflict-file.txt
+git rebase --continue
+```
+
+## Interactive Rebase for Clean Commits
+
+Before merging a feature branch, I clean up my commits with interactive rebase:
+
+```bash
+git rebase -i origin/main
+```
+
+This opens an editor where I can:
+
+```
+pick abc123 Add user authentication
+pick def456 Add protected routes
+pick ghi789 WIP
+
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, edit message
+# s, squash = use commit, meld into previous
+# f, fixup = like squash, discard message
+# d, drop = remove commit
+```
+
+I typically squash WIP commits and reword the main commits to have clear messages.
+
+## A Word of Caution
+
+**Never rebase commits that have been pushed and others may have based their work on.** This rewrites history and can cause serious problems for collaborators.
+
+The golden rule: rebase is for cleaning up your local work before sharing it. Once a commit is public, use merge.
+
+## The Payoff
+
+Since adopting this workflow:
+- `git log` shows a clean, linear history
+- Reverting entire features is straightforward
+- Code reviews see only meaningful changes
+- The project history is something I actually enjoy reading
+
+It takes practice, but it becomes second nature quickly.
