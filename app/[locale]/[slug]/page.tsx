@@ -61,7 +61,7 @@ export default async function PostPage({ params }: PageProps) {
     notFound();
   }
 
-  const t = await getTranslations("Post");
+  const t = await getTranslations({ locale, namespace: "Post" });
   const formattedDate = format(new Date(post.date), "MMMM d, yyyy");
 
   return (

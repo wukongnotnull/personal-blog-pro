@@ -1,8 +1,13 @@
 import { getTranslations } from "next-intl/server";
 import { Container } from "@/components/layout/Container";
 
-export default async function AboutPage() {
-  const t = await getTranslations("About");
+interface AboutPageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function AboutPage({ params }: AboutPageProps) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "About" });
 
   return (
     <section className="py-section">

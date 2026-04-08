@@ -11,7 +11,7 @@ interface BlogPageProps {
 
 export default async function BlogPage({ params }: BlogPageProps) {
   const { locale } = await params;
-  const t = await getTranslations("Blog");
+  const t = await getTranslations({ locale, namespace: "Blog" });
   const posts = getAllPosts();
 
   return (

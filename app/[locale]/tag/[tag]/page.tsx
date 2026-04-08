@@ -28,7 +28,7 @@ export default async function TagPage({ params }: PageProps) {
     notFound();
   }
 
-  const t = await getTranslations("Tag");
+  const t = await getTranslations({ locale, namespace: "Tag" });
 
   return (
     <section className="py-section">
