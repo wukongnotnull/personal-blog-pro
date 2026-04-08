@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/routing";
 import { useSession, signOut } from "next-auth/react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 
 export function Header() {
   const t = useTranslations("Navigation");
@@ -58,6 +59,7 @@ export function Header() {
             </Link>
           )}
           <ThemeToggle />
+          <LanguageSwitcher />
         </nav>
       </div>
     </header>

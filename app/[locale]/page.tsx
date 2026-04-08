@@ -12,7 +12,7 @@ interface HomePageProps {
 
 export default async function Home({ params }: HomePageProps) {
   const { locale } = await params;
-  const t = await getTranslations("Home");
+  const t = await getTranslations({ locale, namespace: "Home" });
   const posts = getAllPosts().slice(0, 5);
 
   return (

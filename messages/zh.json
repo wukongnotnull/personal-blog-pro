@@ -54,6 +54,10 @@
     "switchToLight": "切换到浅色主题",
     "switchToDark": "切换到深色主题"
   },
+  "Language": {
+    "switchLanguage": "切换语言",
+    "currentLanguage": "当前语言"
+  },
   "Auth": {
     "login": "登录",
     "email": "邮箱",

@@ -54,6 +54,10 @@
     "switchToLight": "Switch to light theme",
     "switchToDark": "Switch to dark theme"
   },
+  "Language": {
+    "switchLanguage": "Switch language",
+    "currentLanguage": "Current language"
+  },
   "Auth": {
     "login": "Login",
     "email": "Email",
