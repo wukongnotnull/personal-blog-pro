@@ -1,43 +1,34 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter, usePathname } from "@/routing";
+import { useRouter } from "@/routing";
 
 export function LanguageSwitcher() {
   const locale = useLocale();
   const t = useTranslations("Language");
   const router = useRouter();
-  const pathname = usePathname();
 
   const otherLocale = locale === "en" ? "zh" : "en";
-
-  // With localePrefix: "as-needed", pathname includes locale prefix when not default
-  // So we need to strip the current locale prefix if present
-  const getLocaleFromPath = (path: string): string | null => {
-    const segments = path.split("/").filter(Boolean);
-    const first = segments[0];
-    if (first === "en" || first === "zh") {
-      return first;
-    }
-    return null;
-  };
+  const otherLocaleLabel = locale === "en" ? "中文" : "EN";
 
   function handleSwitch() {
-    const pathLocale = getLocaleFromPath(pathname);
+    // Get current pathname from window location
+    const pathname = window.location.pathname;
 
-    if (pathLocale) {
-      // Replace locale in path
-      const segments = pathname.split("/");
-      segments[1] = otherLocale;
-      const newPath = segments.join("/");
-      router.push(newPath);
+    let newPath: string;
+
+    if (locale === "en") {
+      // Switching from English to Chinese: add /zh prefix
+      newPath = `/zh${pathname}`;
     } else {
-      // No locale in path, prepend the other locale
-      router.push(`/${otherLocale}${pathname}`);
+      // Switching from Chinese to English: remove /zh prefix
+      // pathname could be /zh, /zh/blog, /zh/tag/xxx, etc.
+      newPath = pathname.replace(/^\/zh/, "") || "/";
+      if (newPath === "") newPath = "/";
     }
-  }
 
-  const otherLocaleLabel = locale === "en" ? "中文" : "EN";
+    router.push(newPath);
+  }
 
   return (
     <button
