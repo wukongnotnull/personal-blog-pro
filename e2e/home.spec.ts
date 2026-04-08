@@ -40,4 +40,37 @@ test.describe("Home Page", () => {
     const postCards = page.locator("article");
     await expect(postCards.first()).toBeVisible();
   });
+
+  test("home page has no nested anchor tags in post cards", async ({ page }) => {
+    await page.goto("/en");
+
+    // Collect any console errors
+    const consoleErrors: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error") {
+        consoleErrors.push(msg.text());
+      }
+    });
+
+    await page.goto("/en");
+
+    // Check that no article contains nested anchor tags
+    const articles = page.locator("article");
+    const count = await articles.count();
+    expect(count).toBeGreaterThan(0);
+
+    for (let i = 0; i < count; i++) {
+      const article = articles.nth(i);
+      // An article should have at most one direct anchor descendant
+      // If TagBadge links are inside the card link, we'd have nested anchors
+      const nestedAnchors = article.locator("a a");
+      await expect(nestedAnchors).toHaveCount(0);
+    }
+
+    // Verify no hydration errors
+    const hydrationErrors = consoleErrors.filter(
+      (err) => err.includes("Hydration") || err.includes("nested")
+    );
+    expect(hydrationErrors).toHaveLength(0);
+  });
 });
