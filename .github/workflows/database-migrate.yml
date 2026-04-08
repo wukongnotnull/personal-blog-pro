@@ -36,7 +36,21 @@ jobs:
         run: npx prisma generate
 
       - name: Run production migrations
-        run: npx prisma migrate deploy
+        run: |
+          npx prisma generate
+
+          # Run migrate deploy, but allow it to fail gracefully if database needs baseline
+          set +e
+          MIGRATE_OUTPUT=$(npx prisma migrate deploy 2>&1)
+          MIGRATE_EXIT=$?
+          echo "$MIGRATE_OUTPUT"
+          set -e
+
+          # If P3005 error (database not empty), mark initial migration as applied
+          if [ $MIGRATE_EXIT -ne 0 ] && echo "$MIGRATE_OUTPUT" | grep -q "P3005"; then
+            echo "Database schema already exists, marking initial migration as applied..."
+            npx prisma migrate resolve --applied 20260408_init
+          fi
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
