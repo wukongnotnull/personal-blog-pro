@@ -33,7 +33,7 @@ export default async function LocaleLayout({
       <body className="min-h-screen flex flex-col antialiased">
         <ThemeProvider>
           <AuthProviders>
-            <NextIntlClientProvider messages={messages}>
+            <NextIntlClientProvider locale={locale} messages={messages}>
               <Header />
               <main className="flex-1">{children}</main>
               <Footer />
