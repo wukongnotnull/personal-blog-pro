@@ -36,4 +36,29 @@ test.describe("Navigation", () => {
     // Check Chinese content - use correct Chinese text
     await expect(page.getByText("最新文章")).toBeVisible();
   });
+
+  test("language switcher button switches language", async ({ page }) => {
+    await page.goto("/");
+
+    // Check English content
+    await expect(page.getByText("Recent Posts")).toBeVisible();
+
+    // Find and click language switcher button (shows "中文" or similar)
+    const langSwitcher = page.locator("[aria-label='Switch language'], button:has-text('中文'), button:has-text('EN')").first();
+    await langSwitcher.click();
+
+    // Should now show Chinese content
+    await expect(page.getByText("最新文章")).toBeVisible();
+  });
+
+  test("language switcher stays on current page after switching", async ({ page }) => {
+    await page.goto("/blog");
+
+    // Find and click language switcher
+    const langSwitcher = page.locator("[aria-label='Switch language'], button:has-text('中文'), button:has-text('EN')").first();
+    await langSwitcher.click();
+
+    // Should still be on blog page
+    await expect(page).toHaveURL(/\/blog/);
+  });
 });
