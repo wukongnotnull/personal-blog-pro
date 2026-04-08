@@ -9,6 +9,8 @@ import { TableOfContents } from "@/components/blog/TableOfContents";
 import { Container } from "@/components/layout/Container";
 import { getMDXComponents } from "@/components/mdx/MDXComponents";
 
+export const dynamic = "force-static";
+
 interface PageProps {
   params: Promise<{ slug: string; locale: string }>;
 }

@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Search Functionality", () => {
   test("search page loads correctly", async ({ page }) => {
-    await page.goto("/en/search");
+    await page.goto("/search");
 
     // Check search input exists
     const searchInput = page.locator('input[type="text"]');
@@ -13,7 +13,7 @@ test.describe("Search Functionality", () => {
   });
 
   test("search returns results", async ({ page }) => {
-    await page.goto("/en/search");
+    await page.goto("/search");
 
     // Type in search box
     const searchInput = page.locator('input[type="text"]');
@@ -24,7 +24,7 @@ test.describe("Search Functionality", () => {
   });
 
   test("search shows no results for unknown query", async ({ page }) => {
-    await page.goto("/en/search");
+    await page.goto("/search");
 
     // Type unknown search term
     const searchInput = page.locator('input[type="text"]');
@@ -35,7 +35,7 @@ test.describe("Search Functionality", () => {
   });
 
   test("search shows start typing message initially", async ({ page }) => {
-    await page.goto("/en/search");
+    await page.goto("/search");
 
     // Should show initial message
     await expect(page.getByText(/start typing to search/i)).toBeVisible();

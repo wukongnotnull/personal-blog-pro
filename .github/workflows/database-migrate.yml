@@ -1,0 +1,78 @@
+name: Database Migration
+
+on:
+  push:
+    branches:
+      - main      # 生产环境迁移
+      - dev       # 开发环境迁移（可选）
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to migrate (main or dev)'
+        required: true
+        default: 'main'
+
+jobs:
+  migrate-production:
+    name: Migrate Production (main)
+    runs-on: ubuntu-latest
+    environment: production
+    if: github.ref == 'refs/heads/main' || github.event.inputs.branch == 'main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Run production migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Verify database connection
+        run: npx prisma db execute --stdin <<< "SELECT 1"
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  migrate-dev:
+    name: Migrate Development (dev)
+    runs-on: ubuntu-latest
+    environment: development
+    if: github.ref == 'refs/heads/dev' || github.event.inputs.branch == 'dev'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Run development migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_DEV }}
+
+      - name: Verify database connection
+        run: npx prisma db execute --stdin <<< "SELECT 1"
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_DEV }}

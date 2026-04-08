@@ -8,7 +8,7 @@ export class LoginPage {
   }
 
   async goto() {
-    await this.page.goto("/en/login");
+    await this.page.goto("/login");
   }
 
   async login(email: string, password: string) {

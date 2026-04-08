@@ -4,6 +4,8 @@ import { getPostsByTag, getAllTags } from "@/lib/posts";
 import { PostCard } from "@/components/blog/PostCard";
 import { Container } from "@/components/layout/Container";
 
+export const dynamic = "force-static";
+
 interface PageProps {
   params: Promise<{ locale: string; tag: string }>;
 }

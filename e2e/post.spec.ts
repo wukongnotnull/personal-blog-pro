@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Post Detail Page", () => {
   test("post detail page loads correctly", async ({ page }) => {
-    await page.goto("/en/hello-world");
+    await page.goto("/hello-world");
 
     // Check post title
     await expect(page.locator("h1")).toBeVisible();
@@ -24,7 +24,7 @@ test.describe("Post Detail Page", () => {
   });
 
   test("clicking post card navigates to detail page", async ({ page }) => {
-    await page.goto("/en");
+    await page.goto("/");
 
     // Click on the first post link
     const firstPostLink = page.locator("article a").first();

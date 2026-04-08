@@ -40,7 +40,7 @@ export class DashboardPage {
 
   async logout() {
     await this.page.click('button:has-text("Sign out")');
-    await this.page.waitForURL(/\/en\/login|\/$/);
+    await this.page.waitForURL(/\/login|\/$/);
   }
 
   async expectToBeLoggedIn() {

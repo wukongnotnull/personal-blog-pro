@@ -55,7 +55,7 @@ test.describe("Admin Pages", () => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login("admin@example.com", "admin123");
-    await page.goto("/en/admin");
+    await page.goto("/admin");
     await expect(page.locator("h1:has-text('Dashboard')")).toBeVisible();
   });
 
@@ -63,7 +63,7 @@ test.describe("Admin Pages", () => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login("admin@example.com", "admin123");
-    await page.goto("/en/admin/posts");
+    await page.goto("/admin/posts");
     await expect(page.locator("h1:has-text('Posts')")).toBeVisible();
   });
 });

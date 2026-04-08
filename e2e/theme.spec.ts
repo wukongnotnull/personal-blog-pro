@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Theme Toggle", () => {
   test("theme toggle button exists", async ({ page }) => {
-    await page.goto("/en");
+    await page.goto("/");
 
     // Find theme toggle button (has aria-label with theme)
     const themeToggle = page.locator('button[aria-label*="theme" i]');
@@ -10,7 +10,7 @@ test.describe("Theme Toggle", () => {
   });
 
   test("clicking theme toggle changes theme", async ({ page }) => {
-    await page.goto("/en");
+    await page.goto("/");
 
     const themeToggle = page.locator('button[aria-label*="theme" i]');
 
@@ -28,7 +28,7 @@ test.describe("Theme Toggle", () => {
   });
 
   test("theme persists across page navigation", async ({ page }) => {
-    await page.goto("/en");
+    await page.goto("/");
 
     const themeToggle = page.locator('button[aria-label*="theme" i]');
 
@@ -40,7 +40,7 @@ test.describe("Theme Toggle", () => {
 
     // Navigate to blog page
     await page.getByRole("link", { name: "Blog", exact: true }).click();
-    await expect(page).toHaveURL(/\/en\/blog/);
+    await expect(page).toHaveURL(/\/blog/);
 
     // Theme should still be dark
     await expect(page.locator('button[aria-label*="Switch to light theme"]')).toBeVisible();

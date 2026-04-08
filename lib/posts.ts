@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
+import { cache } from "react";
 import { type Post, type PostFrontmatter, type Heading } from "@/types";
 
 const POSTS_DIR = path.join(process.cwd(), "content/posts");
@@ -25,7 +26,7 @@ function extractHeadings(content: string): Heading[] {
   return headings;
 }
 
-export function getAllPosts(): Post[] {
+export const getAllPosts = cache((): Post[] => {
   if (!fs.existsSync(POSTS_DIR)) {
     return [];
   }
@@ -58,9 +59,9 @@ export function getAllPosts(): Post[] {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return posts;
-}
+});
 
-export function getPostBySlug(slug: string): Post | null {
+export const getPostBySlug = cache((slug: string): Post | null => {
   const mdxPath = path.join(POSTS_DIR, `${slug}.mdx`);
   const mdPath = path.join(POSTS_DIR, `${slug}.md`);
   const fullPath = fs.existsSync(mdxPath) ? mdxPath : fs.existsSync(mdPath) ? mdPath : null;
@@ -85,16 +86,16 @@ export function getPostBySlug(slug: string): Post | null {
     headings: extractHeadings(content),
     content,
   };
-}
+});
 
-export function getPostsByTag(tag: string): Post[] {
+export const getPostsByTag = cache((tag: string): Post[] => {
   const allPosts = getAllPosts();
   return allPosts.filter((post) =>
     post.tags.map((t) => t.toLowerCase()).includes(tag.toLowerCase())
   );
-}
+});
 
-export function getAllTags(): { tag: string; count: number }[] {
+export const getAllTags = cache((): { tag: string; count: number }[] => {
   const posts = getAllPosts();
   const tagCounts = new Map<string, number>();
 
@@ -107,4 +108,4 @@ export function getAllTags(): { tag: string; count: number }[] {
   return Array.from(tagCounts.entries())
     .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => b.count - a.count);
-}
+});

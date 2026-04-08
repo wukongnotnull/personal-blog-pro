@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Blog Listing", () => {
   test("blog page displays posts", async ({ page }) => {
-    await page.goto("/en/blog");
+    await page.goto("/blog");
 
     // Check page title
     await expect(page.getByText("All Posts")).toBeVisible();

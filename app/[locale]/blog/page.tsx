@@ -3,6 +3,8 @@ import { getAllPosts } from "@/lib/posts";
 import { PostCard } from "@/components/blog/PostCard";
 import { Container } from "@/components/layout/Container";
 
+export const dynamic = "force-static";
+
 interface BlogPageProps {
   params: Promise<{ locale: string }>;
 }
