@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "@/routing";
+import { useRouter } from "next/navigation";
 import { createUser, updateUser } from "@/lib/actions/users";
 import { Plus, Edit, X } from "lucide-react";
 

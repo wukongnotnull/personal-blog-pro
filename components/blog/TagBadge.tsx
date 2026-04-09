@@ -5,13 +5,11 @@ import Link from "next/link";
 interface TagBadgeProps {
   tag: string;
   size?: "sm" | "md";
-  locale?: string;
 }
 
 export function TagBadge(props: TagBadgeProps) {
   const { tag, size = "md" } = props;
   const sizeClasses = size === "sm" ? "px-2 py-0.5 text-xs" : "px-3 py-1 text-sm";
-  // With localePrefix: "never", don't include locale in the path
   const href = "/tag/" + tag.toLowerCase();
 
   return (

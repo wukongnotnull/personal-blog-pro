@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "@/routing";
+import { useRouter } from "next/navigation";
 import { createPost, updatePost } from "@/lib/actions/posts";
 
 interface PostFormProps {

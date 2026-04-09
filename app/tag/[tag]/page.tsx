@@ -1,34 +1,28 @@
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
-import { getPostsByTag, getAllTags } from "@/lib/posts";
+import { getPostsByTag, getAllTags } from "@/lib/posts-db";
 import { PostCard } from "@/components/blog/PostCard";
 import { Container } from "@/components/layout/Container";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 interface PageProps {
-  params: Promise<{ locale: string; tag: string }>;
+  params: Promise<{ tag: string }>;
 }
 
 export async function generateStaticParams() {
-  const tags = getAllTags();
-  return tags.flatMap((tag) =>
-    ["en", "zh"].map((locale) => ({
-      tag: tag.tag.toLowerCase(),
-      locale,
-    }))
-  );
+  const tags = await getAllTags();
+  return tags.map((t) => ({
+    tag: t.tag.toLowerCase(),
+  }));
 }
 
 export default async function TagPage({ params }: PageProps) {
-  const { locale, tag } = await params;
-  const posts = getPostsByTag(tag);
+  const { tag } = await params;
+  const posts = await getPostsByTag(tag);
 
   if (posts.length === 0) {
     notFound();
   }
-
-  const t = await getTranslations({ locale, namespace: "Tag" });
 
   return (
     <section className="py-section">
@@ -38,13 +32,13 @@ export default async function TagPage({ params }: PageProps) {
             #{tag}
           </h1>
           <p className="text-text-muted">
-            {t("posts", { count: posts.length })}
+            {posts.length} {posts.length === 1 ? "post" : "posts"}
           </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           {posts.map((post) => (
-            <PostCard key={post.slug} post={post} locale={locale} />
+            <PostCard key={post.id} post={post} />
           ))}
         </div>
       </Container>

@@ -1,19 +1,13 @@
-import { getTranslations } from "next-intl/server";
 import Link from "next/link";
-import { getAllPosts } from "@/lib/posts";
+import { getPublishedPosts } from "@/lib/posts-db";
 import { PostCard } from "@/components/blog/PostCard";
 import { Container } from "@/components/layout/Container";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
-interface HomePageProps {
-  params: Promise<{ locale: string }>;
-}
-
-export default async function Home({ params }: HomePageProps) {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "Home" });
-  const posts = getAllPosts().slice(0, 5);
+export default async function HomePage() {
+  const allPosts = await getPublishedPosts();
+  const posts = allPosts.slice(0, 5);
 
   return (
     <>
@@ -22,10 +16,10 @@ export default async function Home({ params }: HomePageProps) {
         <Container>
           <div className="max-w-2xl">
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6">
-              {t("title")}
+              Welcome to My Blog
             </h1>
             <p className="text-lg text-text-muted leading-relaxed">
-              {t("subtitle")}
+              A personal blog about web development, programming, and technology.
             </p>
           </div>
         </Container>
@@ -35,24 +29,24 @@ export default async function Home({ params }: HomePageProps) {
       <section className="py-section border-t border-border">
         <Container>
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-semibold">{t("recentPosts")}</h2>
+            <h2 className="text-2xl font-semibold">Recent Posts</h2>
             <Link
-              href={`/${locale}/blog`}
+              href="/blog"
               className="text-sm text-accent hover:text-accent-hover transition-colors"
             >
-              {t("viewAll")}
+              View all
             </Link>
           </div>
 
           {posts.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2">
               {posts.map((post) => (
-                <PostCard key={post.slug} post={post} locale={locale} />
+                <PostCard key={post.id} post={post} />
               ))}
             </div>
           ) : (
             <div className="text-center py-16">
-              <p className="text-text-muted">{t("noPosts")}</p>
+              <p className="text-text-muted">No posts yet.</p>
             </div>
           )}
         </Container>

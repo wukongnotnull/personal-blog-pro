@@ -21,19 +21,11 @@ npm run lint         # Run ESLint
 - **React 19** with TypeScript
 - **Tailwind CSS v4** (CSS-first config via `@theme` in globals.css)
 
-### Internationalization
-- **next-intl** for i18n with two locales: `en` (default), `zh`
-- `routing.ts` defines locales and exports `Link`, `redirect`, `useRouter`, `usePathname` from `createNavigation`
-- `middleware.ts` handles locale routing via `next-intl/middleware`
-- All locale-aware pages are under `app/[locale]/`
-- Use the intl `Link` component for locale-aware navigation
-
 ### Content System
 - MDX posts stored in `content/posts/` with frontmatter (gray-matter)
 - `lib/posts.ts` provides `getAllPosts()`, `getPostBySlug()`, `getPostsByTag()`, `getAllTags()`
 - Posts filtered by `draft: true` frontmatter in production
 - `reading-time` calculates estimated read time
-- `flexsearch` provides full-text search via `app/[locale]/search/SearchContent.tsx`
 
 ### Design Tokens
 Defined as CSS custom properties in `app/globals.css`:
@@ -48,19 +40,20 @@ Custom `ThemeProvider` in `components/ThemeProvider.tsx` manages dark/light mode
 ### Key Pages
 | Route | File |
 |-------|------|
-| `/` or `/en` | `app/[locale]/page.tsx` (homepage) |
-| `/en/blog`, `/zh/blog` | `app/[locale]/blog/page.tsx` |
-| `/en/[slug]` | `app/[locale]/[slug]/page.tsx` (post detail) |
-| `/en/tag/[tag]` | `app/[locale]/tag/[tag]/page.tsx` |
-| `/en/search` | `app/[locale]/search/page.tsx` |
+| `/` | `app/page.tsx` (homepage) |
+| `/blog` | `app/blog/page.tsx` |
+| `/[slug]` | `app/[slug]/page.tsx` (post detail) |
+| `/tag/[tag]` | `app/tag/[tag]/page.tsx` |
+| `/search` | `app/search/page.tsx` |
+| `/login` | `app/login/page.tsx` |
 | `/rss.xml` | `app/rss.xml/route.ts` |
 | `/sitemap.xml` | `app/sitemap.ts` |
 
 ### Navigation
-Use `@/routing` Link for locale-aware links:
+Use Next.js `Link` for navigation:
 ```tsx
-import { Link } from "@/routing"
-<Link href="/blog" locale={locale}>Blog</Link>
+import Link from "next/link"
+<Link href="/blog">Blog</Link>
 ```
 
 ### Post Frontmatter Schema
@@ -74,18 +67,3 @@ image: "/optional-og-image.jpg"
 draft: false
 ---
 ```
-
-### Link Component Pattern
-When adding locale-aware links, pass `locale` prop and use `locale={false}` only when intentionally bypassing locale prefix:
-```tsx
-// WRONG - loses locale
-<Link href={`/${tag}`}>
-
-// CORRECT - preserves locale
-<Link href={`/${locale}/tag/${tag}`} locale={locale}>
-```
-
-### Translations
-- Add keys to `messages/en.json` and `messages/zh.json`
-- Use `getTranslations()` in server components
-- Use `useTranslations()` in client components

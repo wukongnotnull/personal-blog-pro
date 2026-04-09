@@ -2,16 +2,14 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "@/routing";
-import { Link } from "@/routing";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const t = useTranslations("Auth");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -29,7 +27,7 @@ export default function LoginPage() {
     });
 
     if (result?.error) {
-      setError(t("invalidCredentials"));
+      setError("Invalid credentials");
       setIsLoading(false);
       return;
     }
@@ -43,7 +41,7 @@ export default function LoginPage() {
       <Container>
         <div className="mx-auto max-w-md">
           <h1 className="text-2xl font-semibold tracking-tight mb-8">
-            {t("login")}
+            Login
           </h1>
 
           <form
@@ -61,7 +59,7 @@ export default function LoginPage() {
                 htmlFor="email"
                 className="block text-sm font-medium mb-2"
               >
-                {t("email")}
+                Email
               </label>
               <input
                 type="email"
@@ -78,7 +76,7 @@ export default function LoginPage() {
                 htmlFor="password"
                 className="block text-sm font-medium mb-2"
               >
-                {t("password")}
+                Password
               </label>
               <input
                 type="password"
@@ -95,7 +93,7 @@ export default function LoginPage() {
               disabled={isLoading}
               className="w-full py-2 px-4 rounded-lg bg-accent text-white font-medium hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? t("loading") : t("login")}
+              {isLoading ? "Loading..." : "Login"}
             </button>
           </form>
 
@@ -104,7 +102,7 @@ export default function LoginPage() {
               href="/"
               className="text-sm text-text-muted hover:text-accent transition-colors"
             >
-              {t("backToHome")}
+              Back to home
             </Link>
           </div>
         </div>

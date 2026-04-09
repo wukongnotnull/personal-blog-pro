@@ -1,14 +1,10 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Link } from "@/routing";
+import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 
 export function Header() {
-  const t = useTranslations("Navigation");
-  const tAuth = useTranslations("Auth");
   const { data: session } = useSession();
 
   return (
@@ -23,43 +19,42 @@ export function Header() {
             href="/"
             className="text-sm text-text-muted hover:text-text transition-colors"
           >
-            {t("home")}
+            Home
           </Link>
           <Link
             href="/blog"
             className="text-sm text-text-muted hover:text-text transition-colors"
           >
-            {t("blog")}
+            Blog
           </Link>
           <Link
             href="/about"
             className="text-sm text-text-muted hover:text-text transition-colors"
           >
-            {t("about")}
+            About
           </Link>
           <Link
             href="/search"
             className="text-sm text-text-muted hover:text-text transition-colors"
           >
-            {t("search")}
+            Search
           </Link>
           {session ? (
             <button
               onClick={() => signOut()}
               className="text-sm text-text-muted hover:text-accent transition-colors"
             >
-              {tAuth("signOut")}
+              Sign out
             </button>
           ) : (
             <Link
               href="/login"
               className="text-sm text-text-muted hover:text-accent transition-colors"
             >
-              {tAuth("login")}
+              Login
             </Link>
           )}
           <ThemeToggle />
-          <LanguageSwitcher />
         </nav>
       </div>
     </header>

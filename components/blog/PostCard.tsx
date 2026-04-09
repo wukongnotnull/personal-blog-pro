@@ -2,23 +2,29 @@
 
 import Link from "next/link";
 import { format } from "date-fns";
-import { Post } from "@/types";
+import { Post, DBPost } from "@/types";
 import { TagBadge } from "./TagBadge";
 
 interface PostCardProps {
-  post: Post;
-  locale?: string;
+  post: Post | DBPost;
   compact?: boolean;
 }
 
-export function PostCard({ post, locale = "en", compact = false }: PostCardProps) {
-  const formattedDate = format(new Date(post.date), "MMM d, yyyy");
+export function PostCard({ post, compact = false }: PostCardProps) {
+  const isDB = "publishedAt" in post;
+  const date = isDB ? post.publishedAt : post.date;
+  const description = isDB ? post.excerpt : post.description;
+  const tagNames: string[] = isDB ? post.tags.map((t) => t.name) : post.tags;
+
+  const dateObj = date ? new Date(date) : null;
+  const formattedDate = dateObj ? format(dateObj, "MMM d, yyyy") : "";
+  const dateTimeStr = dateObj ? dateObj.toISOString() : "";
 
   return (
     <article className="group">
       <div className="p-6 rounded-lg border border-border bg-surface hover:bg-background hover:border-accent transition-all duration-300 hover-lift">
         <div className="flex items-center gap-3 text-sm text-text-muted mb-3">
-          <time dateTime={post.date}>{formattedDate}</time>
+          <time dateTime={dateTimeStr}>{formattedDate}</time>
           <span>·</span>
           <span>{post.readingTime} min read</span>
         </div>
@@ -30,23 +36,22 @@ export function PostCard({ post, locale = "en", compact = false }: PostCardProps
         >
           <Link
             href={`/${post.slug}`}
-            locale={locale}
             className="hover:underline"
           >
             {post.title}
           </Link>
         </h2>
 
-        {!compact && (
+        {!compact && description && (
           <p className="text-text-muted mb-4 line-clamp-2">
-            {post.description}
+            {description}
           </p>
         )}
 
-        {post.tags.length > 0 && (
+        {tagNames.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <TagBadge key={tag} tag={tag} size="sm" locale={locale} />
+            {tagNames.map((tagName) => (
+              <TagBadge key={tagName} tag={tagName} size="sm" />
             ))}
           </div>
         )}

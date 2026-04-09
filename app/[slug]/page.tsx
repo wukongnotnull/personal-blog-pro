@@ -1,33 +1,27 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { format } from "date-fns";
-import { getTranslations, getLocale } from "next-intl/server";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import { getPostBySlug, getAllPosts } from "@/lib/posts";
+import { getPostBySlug, getPublishedPosts } from "@/lib/posts-db";
 import { TagBadge } from "@/components/blog/TagBadge";
 import { TableOfContents } from "@/components/blog/TableOfContents";
 import { Container } from "@/components/layout/Container";
-import { getMDXComponents } from "@/components/mdx/MDXComponents";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 interface PageProps {
-  params: Promise<{ slug: string; locale: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const posts = getAllPosts();
-  return posts.flatMap((post) =>
-    ["en", "zh"].map((locale) => ({
-      slug: post.slug,
-      locale,
-    }))
-  );
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     return {
@@ -37,32 +31,33 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: post.title,
-    description: post.description,
+    description: post.metaDescription || post.excerpt || "",
     openGraph: {
-      title: post.title,
-      description: post.description,
+      title: post.metaTitle || post.title,
+      description: post.metaDescription || post.excerpt || "",
       type: "article",
-      publishedTime: post.date,
-      tags: post.tags,
+      publishedTime: post.publishedAt?.toISOString(),
+      tags: post.tags.map((t) => t.name),
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
-      description: post.description,
+      title: post.metaTitle || post.title,
+      description: post.metaDescription || post.excerpt || "",
     },
   };
 }
 
 export default async function PostPage({ params }: PageProps) {
-  const { slug, locale } = await params;
-  const post = getPostBySlug(slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
-  const t = await getTranslations({ locale, namespace: "Post" });
-  const formattedDate = format(new Date(post.date), "MMMM d, yyyy");
+  const formattedDate = post.publishedAt
+    ? format(new Date(post.publishedAt), "MMMM d, yyyy")
+    : "";
 
   return (
     <article className="py-section">
@@ -77,35 +72,34 @@ export default async function PostPage({ params }: PageProps) {
               </h1>
 
               <div className="flex flex-wrap items-center gap-3 text-sm text-text-muted mb-6">
-                <time dateTime={post.date}>{formattedDate}</time>
+                <time dateTime={post.publishedAt?.toISOString()}>
+                  {formattedDate}
+                </time>
                 <span>·</span>
                 <span>
-                  {post.readingTime} {t("minRead")}
+                  {post.readingTime} min read
                 </span>
               </div>
 
               {post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {post.tags.map((tag) => (
-                    <TagBadge key={tag} tag={tag} />
+                    <TagBadge key={tag.id} tag={tag.name} />
                   ))}
                 </div>
               )}
             </header>
 
-            {/* MDX Content */}
+            {/* Content - Rendered as plain text or could use a markdown parser */}
             <div className="prose prose-lg">
-              <MDXRemote
-                source={post.content}
-                components={getMDXComponents()}
-              />
+              <div dangerouslySetInnerHTML={{ __html: post.content }} />
             </div>
           </div>
 
           {/* Sidebar - Table of Contents */}
           <aside className="hidden lg:block">
             <div className="sticky top-24">
-              <TableOfContents headings={post.headings} />
+              <TableOfContents headings={[]} />
             </div>
           </aside>
         </div>

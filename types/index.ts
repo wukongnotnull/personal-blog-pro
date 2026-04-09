@@ -17,6 +17,30 @@ export interface Post {
   content: string;
 }
 
+export interface DBPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  coverImage: string | null;
+  readingTime: number;
+  publishedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  author: {
+    id: string;
+    name: string | null;
+    email: string;
+    image: string | null;
+  };
+  tags: {
+    id: string;
+    name: string;
+    slug: string;
+  }[];
+}
+
 export interface PostFrontmatter {
   title: string;
   date: string;
